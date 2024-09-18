@@ -1,0 +1,75 @@
+﻿@model IEnumerable<EFTModding.Models.Weapon>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="weapon-select-container">
+    <div class="weapon-select">
+        <select id="weapon-select">
+            @foreach (var weapon in Model)
+            {
+                <option id="@weapon.Name"
+                        value="@weapon.Name"
+                        data-base-ergos="@weapon.BaseErgos"
+                        data-base-vert-recoil="@weapon.BaseVertRecoil"
+                        data-base-horz-recoil="@weapon.BaseHorzRecoil">@weapon.Description</option>
+            }
+        </select>
+    </div>
+    <div class="weapon-image">
+        <img id="selected-weapon-image" src="images/MCX.png" />
+    </div>
+    <div class="weapon-stats">
+        <table id="weapon-stats-table">
+
+        </table>
+    </div>
+</div>
+
+<script>
+    const weaponSelect = document.getElementById('weapon-select');
+
+
+    // Updates the image to match the select weapon
+    function updateImage() {
+        const weaponImage = document.getElementById('selected-weapon-image');
+        const selectedOption = document.getElementById('weapon-select').value;
+
+        weaponImage.src = "images/" + selectedOption + ".png";
+    }
+
+    function updateStats() {
+        const selectedOption = weaponSelect.options[weaponSelect.selectedIndex];
+
+        const baseErgos = selectedOption.getAttribute('data-base-ergos');
+        const baseVertRecoil = selectedOption.getAttribute('data-base-vert-recoil');
+        const baseHorzRecoil = selectedOption.getAttribute('data-base-horz-recoil');
+
+        const weaponStatsTable = document.getElementById('weapon-stats-table');
+        weaponStatsTable.innerHTML = `
+            <tr>
+                <th>Base Ergonomics</th>
+                <td>${baseErgos}</td>
+            </tr>
+            <tr>
+                <th>Base Vertical Recoil</th>
+                <td>${baseVertRecoil}</td>
+            </tr>
+            <tr>
+                <th>Base Horizontal Recoil</th>
+                <td>${baseHorzRecoil}</td>
+            </tr>
+        `;
+    }
+
+    // Call updateStats when the weapon selection changes
+    weaponSelect.addEventListener('change', function () {
+        updateImage();
+        updateStats(); // Call updateStats to populate the table
+    });
+
+
+    // Add a listener to call updateImage when the selected weapon is changed
+    weaponSelect.addEventListener('change', updateImage);
+</script>
